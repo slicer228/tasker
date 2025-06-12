@@ -6,5 +6,10 @@ type Runnable interface {
 }
 
 type Statusable interface {
-	GetInfo() *TaskInfo
+	GetInfoFormatted() *TaskFormatted
+}
+
+type Callable interface {
+	Call() (any, error)
+	Cancel() error
 }

@@ -2,3 +2,5 @@ env: "local"
 http:
   address: "0.0.0.0:8080"
   timeout: 5s
+tasker:
+  max_tasks: 100

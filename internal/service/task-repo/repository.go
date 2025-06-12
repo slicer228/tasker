@@ -19,13 +19,6 @@ type TaskFarm struct {
 	mu       sync.RWMutex
 }
 
-func New(log *slog.Logger, maxTasks uint64) *TaskFarm {
-	return &TaskFarm{
-		log:      log,
-		maxTasks: maxTasks,
-	}
-}
-
 func (t *TaskFarm) CreateTask(c *clock.Clock, toCall func(ctx *context.Context, args ...any) (any, error), args ...any) (uint64, error) {
 	t.mu.Lock()
 	defer t.mu.Unlock()
@@ -44,35 +37,63 @@ func (t *TaskFarm) CreateTask(c *clock.Clock, toCall func(ctx *context.Context, 
 	return taskId, nil
 }
 
-func (t *TaskFarm) GetTask(taskId uint64) *task.Task {
-	return t.tasks[taskId]
-}
-
-func (t *TaskFarm) StopTask(taskId uint64) {
+func (t *TaskFarm) StopTask(taskId uint64) error {
 	t.mu.RLock()
 	defer t.mu.RUnlock()
-
+	found := t.tasks[taskId]
+	if found == nil {
+		return fmt.Errorf("task not found")
+	}
 	t.tasks[taskId].Stop()
+
+	return nil
 }
 
-func (t *TaskFarm) RemoveTask(taskId uint64) {
+func (t *TaskFarm) RemoveTask(taskId uint64) error {
 	t.mu.Lock()
 	defer t.mu.Unlock()
-
+	found := t.tasks[taskId]
+	if found == nil {
+		return fmt.Errorf("task not found")
+	}
 	t.tasks[taskId].Stop()
 	delete(t.tasks, taskId)
+
+	t.log.Info("Task removed", "task_id", taskId)
+
+	return nil
 }
 
-func (t *TaskFarm) RunTask(taskId uint64) {
+func (t *TaskFarm) RunTask(taskId uint64) error {
 	t.mu.RLock()
 	defer t.mu.RUnlock()
 
+	found := t.tasks[taskId]
+	if found == nil {
+		return fmt.Errorf("task not found")
+	}
 	t.tasks[taskId].Run()
+
+	return nil
 }
 
-func (t *TaskFarm) GetTaskInfo(taskId uint64) *task.TaskInfo {
+func (t *TaskFarm) GetTaskInfo(taskId uint64) (*task.TaskFormatted, error) {
 	t.mu.RLock()
 	defer t.mu.RUnlock()
 
-	return t.tasks[taskId].GetInfo()
+	found := t.tasks[taskId]
+	if found == nil {
+		return nil, fmt.Errorf("task not found")
+	}
+
+	return t.tasks[taskId].GetInfoFormatted(), nil
+}
+
+func NewTaskFarm(log *slog.Logger, maxTasks uint64) *TaskFarm {
+	return &TaskFarm{
+		log:      log,
+		maxTasks: maxTasks,
+		tasks:    make(map[uint64]*task.Task),
+		mu:       sync.RWMutex{},
+	}
 }

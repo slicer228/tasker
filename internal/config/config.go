@@ -10,11 +10,16 @@ import (
 type Config struct {
 	Env        string `yaml:"env" env-default:"local"`
 	HTTPServer `yaml:"http"`
+	Tasker     `yaml:"tasker"`
 }
 
 type HTTPServer struct {
 	Address string        `yaml:"address" env-default:"localhost:8080"`
 	Timeout time.Duration `yaml:"timeout" env-default:"5s"`
+}
+
+type Tasker struct {
+	MaxTasks uint64 `yaml:"maxTasks" env-default:"10"`
 }
 
 func MustLoad() *Config {

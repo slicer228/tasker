@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	//here you could construct your app
 	cfg := config.MustLoad()
 	log := logger.NewLogger(cfg.Env)
 

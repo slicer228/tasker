@@ -27,6 +27,8 @@ func NewCreateTaskRouter(log *slog.Logger, tasker *task_repo.TaskFarm) func(w ht
 
 		w.Header().Set("Content-Type", "application/json")
 
+		//example of func to launch
+		//you can use context to provide termination of this func(method StopTask in task-repo)
 		taskId, err := tasker.CreateTask(clock.NewTimer(time.UTC), func(ctx *context.Context, args ...any) (any, error) {
 			time.Sleep(time.Second * 5)
 			return 1, nil

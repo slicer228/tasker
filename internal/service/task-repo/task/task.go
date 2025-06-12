@@ -31,19 +31,19 @@ type Task struct {
 	Runnable
 	Statusable
 	createdAt clock.Time
-	toCall    *ToCall
-	jobs      []*Job
+	toCall    *ToCall //function to proceed
+	jobs      []*Job  //storage for history of task jobs
 	status    string
 	log       *slog.Logger
 	clock     *clock.Clock
-	mu        sync.Mutex
+	mu        sync.Mutex //mutex for sync
 }
 
 type Job struct {
 	Timestamps
 	status    string
-	JobNumber int
-	Result    *Result
+	JobNumber int     //number in one task
+	Result    *Result //contains result of toCall obj
 }
 
 type Timestamps struct {

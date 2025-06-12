@@ -14,9 +14,9 @@ var tasksCount uint64 = 0
 type TaskFarm struct {
 	TaskRepo
 	log      *slog.Logger
-	maxTasks uint64
-	tasks    map[uint64]*task.Task
-	mu       sync.RWMutex
+	maxTasks uint64                //max tasks stored in time
+	tasks    map[uint64]*task.Task //map of stored tasks
+	mu       sync.RWMutex          //mutex for sync work with map
 }
 
 func (t *TaskFarm) CreateTask(c *clock.Clock, toCall func(ctx *context.Context, args ...any) (any, error), args ...any) (uint64, error) {

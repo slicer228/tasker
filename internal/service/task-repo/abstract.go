@@ -6,6 +6,7 @@ import (
 	"tasker/internal/service/task-repo/task"
 )
 
+// interface to work with repo
 type TaskRepo interface {
 	CreateTask(c *clock.Clock, toCall func(ctx *context.Context, args ...any) (any, error), args ...any) (uint64, error)
 	StopTask(taskId uint64)

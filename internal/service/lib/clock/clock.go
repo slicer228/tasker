@@ -2,7 +2,10 @@ package clock
 
 import "time"
 
+// custom time format(may change)
 var timeFormat string = "2006-01-02 15:04:05.00"
+
+// custom time format(may change)
 var timeDeltaFormat string = "15:04:05.00"
 
 type Clock struct {

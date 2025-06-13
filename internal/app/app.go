@@ -26,10 +26,6 @@ func (app *App) MustRun() {
 	}
 }
 
-func (app *App) Stop() {
-
-}
-
 func NewApp(log *slog.Logger, cfg *config.Config) *App {
 	tasker := task_repo.NewTaskFarm(log, cfg.MaxTasks)
 	return &App{
